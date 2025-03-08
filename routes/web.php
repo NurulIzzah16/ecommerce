@@ -14,7 +14,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\App;
-
+use Illuminate\Support\Facades\Redirect;
 
 Route::get('/', function () {
     return redirect('/login');

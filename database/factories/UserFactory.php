@@ -13,15 +13,15 @@ use App\Models\User;
 class UserFactory extends Factory
 {
     protected $model = User::class;
+
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'username' => $this->faker->userName,
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'),
             'role' => $this->faker->randomElement(['admin', 'user']),
-            'address' => $this->faker->address,
-            'phone_number' => $this->faker->phoneNumber,
+
         ];
     }
 }
