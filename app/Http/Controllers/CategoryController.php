@@ -13,33 +13,66 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+    // Menampilkan semua kategori
     public function index()
     {
-        return view('admin.categories.index');
+        $categories = Category::all();
+        return view('admin.categories.index', compact('categories'));
     }
 
+    // Menampilkan form tambah kategori
     public function create()
     {
         return view('admin.categories.create');
     }
 
-    public function store()
+    // Menyimpan kategori baru
+    public function store(Request $request)
     {
-        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string'
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+            'description' => $request->description
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    public function edit()
+    // Menampilkan form edit kategori
+    public function edit($id)
     {
-        return view('admin.categories.edit');
+        $category = Category::findOrFail($id);
+        return view('admin.categories.edit', compact('category'));
     }
 
-    public function update()
+    // Memperbarui kategori
+    public function update(Request $request, $id)
     {
-        
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string'
+        ]);
+
+        $category->update([
+            'name' => $request->name,
+            'description' => $request->description
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    public function destroy()
+    // Menghapus kategori
+    public function destroy($id)
     {
-        
+        $category = Category::findOrFail($id);
+        $category->delete();
+
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }

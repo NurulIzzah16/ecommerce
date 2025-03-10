@@ -16,6 +16,6 @@ class ProductImageSeeder extends Seeder
             ['product_id' => 3, 'image_url' => 'images/products/tshirt-cotton.jpg', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
-        ProductImage::factory(10)->create();
+        ProductImage::factory(7)->create();
     }
 }

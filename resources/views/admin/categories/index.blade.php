@@ -27,27 +27,6 @@
 </div>
 @endif
 
-@php
-    // Data dummy untuk kategori
-    $dummyCategories = [
-        (object)[
-            'id' => 1,
-            'name' => 'Kategori A',
-            'description' => 'Deskripsi untuk Kategori A'
-        ],
-        (object)[
-            'id' => 2,
-            'name' => 'Kategori B',
-            'description' => 'Deskripsi untuk Kategori B'
-        ],
-        (object)[
-            'id' => 3,
-            'name' => 'Kategori C',
-            'description' => 'Deskripsi untuk Kategori C'
-        ],
-    ];
-@endphp
-
 <table id="categoriesTable" class="table table-striped" style="width:100%">
     <thead>
         <tr>
@@ -58,14 +37,18 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($dummyCategories as $category)
+        @foreach($categories as $category)
             <tr>
                 <td>{{ $category->id }}</td>
                 <td>{{ $category->name }}</td>
                 <td>{{ $category->description }}</td>
                 <td>
-                    <a href="{{ route('categories.edit', 1) }}" class="btn btn-sm btn-primary">Edit</a>
-                    <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                    <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah kamu yakin ingin menghapus kategori ini?')">Delete</button>
+                    </form>
                 </td>
             </tr>
         @endforeach

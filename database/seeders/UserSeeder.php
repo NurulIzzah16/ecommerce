@@ -37,7 +37,5 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ]
         ]);
-
-        User::factory(5)->create(); // Generate 5 random users
     }
 }
