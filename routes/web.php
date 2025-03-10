@@ -34,7 +34,7 @@ Route::get('users', [UserController::class, 'index'])->name('users.index');
 Route::get('users/{id}', [UserController::class, 'show'])->name('users.show');
 Route::get('/export/user', [UserController::class, 'export'])->name('export.user');
 
-Route::get('admins', [AdminController::class, 'index'])->name('admins.index');
+Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
 Route::get('admins/data', [AdminController::class, 'show'])->name('admins.data');
 Route::get('admins/create', [AdminController::class, 'create'])->name('admins.create');
 Route::post('admins', [AdminController::class, 'store'])->name('admins.store');
@@ -51,6 +51,12 @@ Route::get('/export/order', [OrderController::class, 'export'])->name('export.or
 Route::get('settings', [AuthenticationController::class, 'settingView'])->name('settings.index');
 Route::post('settings/email', [AuthenticationController::class, 'emailChange'])->name('settings.store');
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
+});
 
 Route::get('/greeting/{locale}', function (string $locale) {
     if (! in_array($locale, ['en', 'id'])) {
@@ -61,3 +67,5 @@ Route::get('/greeting/{locale}', function (string $locale) {
     return back();
 })->name('set.language');
 Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
+
+Route::get('/profile', [UserController::class, 'profile'])->name('profile');

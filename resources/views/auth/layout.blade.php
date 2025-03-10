@@ -18,21 +18,44 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto">
+
+                    {{-- Dropdown untuk memilih bahasa --}}
                     <div class="dropdown">
                         <button class="btn dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ app()->getLocale() === 'en' ? 'Language' : 'Bahasa' }}
+                            {{ app()->getLocale() === 'en' ? 'Language' : 'Bahasa' }}
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown">
                             <li><a class="dropdown-item" href="{{ route('set.language', 'en') }}">English</a></li>
                             <li><a class="dropdown-item" href="{{ route('set.language', 'id') }}">Indonesia</a></li>
                         </ul>
                     </div>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('login') ? 'active' : '' }}" href="{{ route('login') }}">{{__('auth.login')}}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('register') ? 'active' : '' }}" href="{{ route('register') }}">{{__('auth.register')}}</a>
-                    </li>
+
+                    {{-- Cek apakah user sudah login --}}
+                    @if(Auth::check())
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ Auth::user()->name }} {{-- Menampilkan Nama Admin yang Login --}}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{{ route('profile') }}">{{ __('auth.profile') }}</a></li>
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger">{{ __('auth.logout') }}</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        {{-- Jika belum login, tampilkan tombol Login & Register --}}
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('login') ? 'active' : '' }}" href="{{ route('login') }}">{{ __('auth.login') }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('register') ? 'active' : '' }}" href="{{ route('register') }}">{{ __('auth.register') }}</a>
+                        </li>
+                    @endif
+
                 </ul>
             </div>
         </div>

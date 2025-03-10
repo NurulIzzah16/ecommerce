@@ -16,10 +16,11 @@ return [
     'login' => 'Login',
     'register' => 'Register',
     'password' => 'Password',
-    'forgot password' => 'Forgot password',
+    'forgot_password' => 'Forgot password',
     'name' => 'Name',
-    'confirm password' => 'Confirm Password',
+    'confirm_password' => 'Confirm Password',
     'address' => 'Address',
-    'phone number' => 'Phone Number',
-
+    'phone_number' => 'Phone Number',
+    'reset_password' => 'Reset Password',
+    'new_password' => 'Kata Sandi Baru',
 ];

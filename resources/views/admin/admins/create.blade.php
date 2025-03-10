@@ -1,7 +1,8 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2 class="mt-3">{{__('admin.add')}}</h2>
+    <h2 class="mt-3">{{ __('admin.add') }}</h2>
+
     @if (session('error'))
         <div class="alert alert-danger">
             {{ session('error') }}
@@ -21,29 +22,28 @@
     <form action="{{ route('admins.store') }}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="name">{{__('auth.name')}}</label>
-            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+            <label for="username">{{ __('auth.username') }}</label>
+            <input type="text" name="username" class="form-control" value="{{ old('username') }}" required>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
         </div>
         <div class="form-group">
-            <label for="password">{{__('auth.password')}}</label>
-            <input type="password" name="password" class="form-control" value="{{ old('password') }}" required>
+            <label for="password">{{ __('auth.password') }}</label>
+            <input type="password" name="password" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="password_confirmation">{{__('auth.confirm password')}}</label>
-            <input type="password" name="password_confirmation" class="form-control" value="{{ old('password_confirmation') }}" required>
+            <label for="password_confirmation">{{ __('auth.confirm password') }}</label>
+            <input type="password" name="password_confirmation" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="address">{{__('auth.address')}}</label>
-            <input type="text" name="address" class="form-control" value="{{ old('address') }}" required>
+            <label for="role">{{ __('auth.role') }}</label>
+            <select name="role" class="form-control" required>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
         </div>
-        <div class="form-group">
-            <label for="phone_number">{{__('auth.phone number')}}</label>
-            <input type="number" name="phone_number" class="form-control" value="{{ old('phone_number') }}" required>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">{{__('auth.register')}}</button>
+        <button type="submit" class="btn btn-primary mt-3">{{ __('auth.register') }}</button>
     </form>
 @endsection

@@ -16,10 +16,11 @@ return [
     'login' => 'Masuk',
     'register' => 'Daftar',
     'password' => 'Kata Sandi',
-    'forgot password' => 'Lupa kata sandi',
+    'forgot_password' => 'Lupa kata sandi',
     'name' => 'Nama',
-    'confirm password' => 'Konfirmasi Kata Sandi',
+    'confirm_password' => 'Konfirmasi Kata Sandi',
     'address' => 'Alamat',
-    'phone number' => 'Nomor HP',
-
+    'phone_number' => 'Nomor HP',
+    'reset_password' => 'Ubah Kata Sandi',
+    'new_password' => 'Kata Sandi Baru',
 ];
