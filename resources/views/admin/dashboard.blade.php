@@ -7,7 +7,7 @@
             <div class="card text-white bg-primary mb-3">
                 <div class="card-header">{{__('dashboard.total users')}}</div>
                 <div class="card-body">
-                    <h5 class="card-title">0</h5>
+                    <h5 class="card-title">{{ \App\Models\User::count() }}</h5>
                 </div>
             </div>
         </div>
@@ -15,7 +15,7 @@
             <div class="card text-white bg-success mb-3">
                 <div class="card-header">{{__('dashboard.total products')}}</div>
                 <div class="card-body">
-                    <h5 class="card-title">0</h5>
+                    <h5 class="card-title">{{ \App\Models\Product::count() }}</h5>
                 </div>
             </div>
         </div>
