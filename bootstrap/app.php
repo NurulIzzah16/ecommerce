@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\AdminMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,11 +13,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(append:[
+        $middleware->web(append: [
             App\Http\Middleware\Localization::class,
         ]);
-        $middleware->api(append:[
+
+        $middleware->api(append: [
             App\Http\Middleware\LocalizationApi::class,
+        ]);
+
+        // Alias middleware harus berupa array
+        $middleware->alias(aliases: [
+            'admin' => AdminMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

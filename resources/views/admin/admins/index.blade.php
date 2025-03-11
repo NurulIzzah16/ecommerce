@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<h2 class="mt-3">{{ __('admin.list admins') }}</h2>
+<h2 class="mt-3">{{ __('admin.list_admins') }}</h2>
 
 <a href="{{ route('admins.create') }}" class="btn btn-primary mb-3">{{ __('admin.add') }}</a>
 

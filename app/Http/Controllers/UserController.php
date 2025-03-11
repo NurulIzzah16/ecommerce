@@ -1,14 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
-
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Order;
 
 class UserController extends Controller
 {
@@ -19,15 +17,14 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        // Jika bukan admin, tolak akses
         if ($user->role !== 'admin') {
-            abort(403, 'Anda tidak diizinkan mengakses halaman ini.');
+            return redirect()->route('home')->with('error', 'Anda tidak diizinkan mengakses halaman ini.');
         }
 
-        // Admin bisa melihat semua user
-        $users = User::all();
+        $users = User::where('role', 'user')->get();
         return view('admin.users.index', compact('users'));
     }
+
 
     /**
      * Menampilkan profil user
@@ -37,12 +34,18 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $authUser = Auth::user();
 
-        // User biasa hanya boleh melihat profil sendiri
+        // Hanya izinkan user melihat profil sendiri atau admin melihat profil siapa saja
         if ($authUser->role !== 'admin' && $authUser->id !== $user->id) {
-            abort(403, 'Anda tidak memiliki akses untuk melihat profil ini.');
+            return redirect()->route('home')->with('error', 'Anda tidak memiliki akses untuk melihat profil ini.');
         }
 
-        return view('admin.users.show', compact('user'));
+        // Ambil data orders dan gabungkan dengan status dari tabel payments
+        $orders = Order::where('orders.user_id', $user->id)
+            ->leftJoin('payments', 'orders.id', '=', 'payments.order_id')
+            ->select('orders.id', 'orders.total_price', 'payments.status', 'orders.created_at')
+            ->get();
+
+        return view('admin.users.show', compact('user', 'orders'));
     }
 
     /**
@@ -50,7 +53,13 @@ class UserController extends Controller
      */
     public function edit()
     {
-        return view('admin.users.edit', ['user' => Auth::user()]);
+        $user = Auth::user();
+        // Pastikan user hanya bisa mengedit profilnya sendiri
+        if ($user->role !== 'admin' && $user->id !== Auth::user()->id) {
+            return redirect()->route('home')->with('error', 'Anda tidak diizinkan mengedit profil ini.');
+        }
+
+        return view('admin.users.edit', ['user' => $user]);
     }
 
     /**
@@ -58,8 +67,7 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        /** @var User $user */
-        $user = Auth::user(); // Pastikan ini instance dari User
+        $user = Auth::user();
 
         if (!$user) {
             return redirect()->back()->with('error', 'User tidak ditemukan.');
@@ -75,7 +83,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Set nilai baru ke model User
+        // Update the user data
         $user->username = $request->username;
         $user->email = $request->email;
 
@@ -83,14 +91,45 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        $user->save(); // Pastikan ini dipanggil pada instance User
+        // Ensure this is an Eloquent model
+        if ($user instanceof \Illuminate\Database\Eloquent\Model) {
+            $user->save();
+        } else {
+            // Debugging output
+            dd('User is not an Eloquent model');
+        }
 
         return redirect()->route('users.show', $user->id)->with('success', 'Profil berhasil diperbarui.');
     }
-
+    /**
+     * Menampilkan halaman profil user
+     */
     public function profile()
     {
         $user = Auth::user();
         return view('admin.users.profile', compact('user'));
+    }
+
+    /**
+     * Membatasi login untuk user biasa
+     */
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        // Cek login dengan role
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+
+            // Jika bukan admin, arahkan ke halaman lain
+            if ($user->role !== 'admin') {
+                Auth::logout();
+                return redirect()->route('home')->with('error', 'Anda tidak diizinkan login ke dashboard admin.');
+            }
+
+            return redirect()->route('admin.dashboard'); // Ganti dengan route admin dashboard Anda
+        }
+
+        return redirect()->route('login')->with('error', 'Login gagal. Silakan coba lagi.');
     }
 }

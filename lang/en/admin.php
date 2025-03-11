@@ -3,12 +3,12 @@
 return [
 
     'add' => 'Add Admin',
-    'list admins' => 'List Admins',
-    'role name' => 'Role',
-    'name' => 'Name',
+    'list_admins' => 'List Admins',
+    'role_name' => 'Role',
+    'username' => 'Username',
     'actions' => 'Actions',
-    'category name' => 'Category Name',
-    'edit admin' => 'Edit Admin',
-    'update role' => 'Update Role',
-
+    'category_name' => 'Category Name',
+    'edit_admin' => 'Edit Admin',
+    'confirm_password' => 'Konfirmasi Kata sandi',
+    'update_role' => 'Update Role',
 ];

@@ -22,7 +22,7 @@
     <form action="{{ route('admins.store') }}" method="POST">
         @csrf
         <div class="form-group">
-            <label for="username">{{ __('auth.username') }}</label>
+            <label for="username">{{ __('admin.username') }}</label>
             <input type="text" name="username" class="form-control" value="{{ old('username') }}" required>
         </div>
         <div class="form-group">
@@ -34,11 +34,11 @@
             <input type="password" name="password" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="password_confirmation">{{ __('auth.confirm password') }}</label>
+            <label for="password_confirmation">{{ __('admin.confirm_password') }}</label>
             <input type="password" name="password_confirmation" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="role">{{ __('auth.role') }}</label>
+            <label for="role">{{ __('admin.role_name') }}</label>
             <select name="role" class="form-control" required>
                 <option value="admin">Admin</option>
                 <option value="user">User</option>

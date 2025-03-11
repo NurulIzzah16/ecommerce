@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -18,9 +17,8 @@ class AdminController extends Controller
 
     public function index()
     {
-        // Admin hanya bisa melihat semua user termasuk admin
-        $users = User::all();
-        return view('admin.admins.index', compact('users'));
+        $admins = User::where('role', 'admin')->get();
+        return view('admin.admins.index', compact('admins'));
     }
 
     public function create()
@@ -30,15 +28,11 @@ class AdminController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'username' => 'required|string|max:50',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
 
         User::create([
             'username' => $request->username,
@@ -47,7 +41,7 @@ class AdminController extends Controller
             'role' => 'admin',
         ]);
 
-        return redirect()->route('admins.index')->with('success', 'Admin created successfully.');
+        return redirect()->route('admins.index')->with('success', 'Admin berhasil dibuat.');
     }
 
     public function edit($id)
@@ -60,30 +54,29 @@ class AdminController extends Controller
     {
         $admin = User::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'username' => 'required|string|max:50',
-            'email' => 'required|string|email|max:100|unique:users,email,' . $id,
+            'role' => 'required|in:admin,user',
             'password' => 'nullable|string|min:6|confirmed',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
         $admin->username = $request->username;
-        $admin->email = $request->email;
+        $admin->role = $request->role;
+
         if ($request->password) {
             $admin->password = Hash::make($request->password);
         }
+
         $admin->save();
 
-        return redirect()->route('admins.index')->with('success', 'Admin updated successfully.');
+        return redirect()->route('admins.index')->with('success', 'Admin berhasil diupdate.');
     }
 
     public function destroy($id)
     {
         $admin = User::findOrFail($id);
         $admin->delete();
-        return redirect()->route('admins.index')->with('success', 'Admin deleted successfully.');
+
+        return redirect()->route('admins.index')->with('success', 'Admin berhasil dihapus.');
     }
 }

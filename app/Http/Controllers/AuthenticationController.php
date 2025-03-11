@@ -28,6 +28,7 @@ class AuthenticationController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'user' // Tambahkan ini jika ingin otomatis menjadi user biasa
         ]);
 
         return redirect('/login')->with('success', 'Registration successful. Please log in.');
@@ -47,12 +48,29 @@ class AuthenticationController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect('/dashboard')->with('success', 'Login successful.');
+
+            $user = Auth::user();
+
+            if ($user->role === 'user') { // Cegah user biasa login
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Akun ini tidak diizinkan untuk login.',
+                ]);
+            }
+
+            if ($user->role === 'admin') { // Arahkan admin ke dashboard admin
+                return redirect('/admin/dashboard')->with('success', 'Login berhasil sebagai admin.');
+            }
+
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Role tidak valid. Akses ditolak.',
+            ]);
         }
 
         return back()->withErrors([
             'email' => 'Email atau password salah!',
-        ])->onlyInput('email');
+        ])->withInput($request->only('email'));
     }
 
     public function logout(Request $request)
@@ -61,9 +79,8 @@ class AuthenticationController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login')->with('success', 'You have logged out successfully!');
+        return redirect('/');
     }
-
 
     public function settingView()
     {
@@ -74,26 +91,25 @@ class AuthenticationController extends Controller
     {
         $user = User::find(Auth::id());
 
-    if (!$user) {
-        return redirect('/dashboard')->with('error', 'User tidak ditemukan.');
+        if (!$user) {
+            return redirect('/dashboard')->with('error', 'User tidak ditemukan.');
+        }
+
+        $request->validate([
+            'username' => 'required|string|max:50|unique:users,username,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        $user->username = $request->username;
+        $user->email = $request->email;
+
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect('/dashboard')->with('success', 'Profil berhasil diperbarui.');
     }
-
-    $request->validate([
-        'username' => 'required|string|max:50|unique:users,username,' . $user->id,
-        'email' => 'required|email|unique:users,email,' . $user->id,
-        'password' => 'nullable|string|min:6|confirmed',
-    ]);
-
-    $user->username = $request->username;
-    $user->email = $request->email;
-
-    if ($request->password) {
-        $user->password = Hash::make($request->password);
-    }
-
-    $user->save();
-
-    return redirect('/dashboard')->with('success', 'Profil berhasil diperbarui.');
-    }
-
 }

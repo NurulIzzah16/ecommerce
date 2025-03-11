@@ -3,11 +3,11 @@
 return [
 
     'add' => 'Tambah Admin',
-    'list admins' => 'Daftar Admin',
-    'role name' => 'Peran',
-    'name' => 'Nama',
+    'list_admins' => 'Daftar Admin',
+    'role_name' => 'Peran',
+    'username' => 'Username',
     'actions' => 'Aksi',
-    'edit admin' => 'Edit Admin',
-    'update role' => 'Ubah Peran',
+    'edit_admin' => 'Edit Admin',
+    'update_role' => 'Ubah Peran',
 
 ];
