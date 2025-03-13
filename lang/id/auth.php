@@ -23,4 +23,5 @@ return [
     'phone_number' => 'Nomor HP',
     'reset_password' => 'Ubah Kata Sandi',
     'new_password' => 'Kata Sandi Baru',
+    'send_reset_link' => 'Kirim Link Reset'
 ];

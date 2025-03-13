@@ -22,13 +22,14 @@ class AuthenticationController extends Controller
             'username' => 'required|unique:users',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'required|string|min:6|same:password'
         ]);
 
         User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user' // Tambahkan ini jika ingin otomatis menjadi user biasa
+            'role' => 'admin'
         ]);
 
         return redirect('/login')->with('success', 'Registration successful. Please log in.');
@@ -99,6 +100,7 @@ class AuthenticationController extends Controller
             'username' => 'required|string|max:50|unique:users,username,' . $user->id,
             'email' => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:6|confirmed',
+            'password_confirmation' => 'required|string|min:6|same:password'
         ]);
 
         $user->username = $request->username;

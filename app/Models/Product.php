@@ -19,4 +19,14 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
+
+    public function decreaseStock($quantity)
+    {
+        if ($this->stock >= $quantity) {
+            $this->stock -= $quantity;
+            $this->save();
+        } else {
+            throw new \Exception('Stok produk tidak mencukupi');
+        }
+    }
 }

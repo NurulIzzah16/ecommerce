@@ -6,13 +6,10 @@
 
             <div class="card card-primary">
                 <div class="card-header">
-                    <h4>{{ __('auth.forgot password') }}</h4>
+                    <h4>{{ __('auth.forgot_password') }}</h4>
                 </div>
 
                 <div class="card-body">
-                    <p class="text-muted">{{ __('auth.forgot password description') }}</p>
-
-                    {{-- Pesan status sukses jika email berhasil dikirim --}}
                     @if (session('status'))
                         <div class="alert alert-success">
                             {{ session('status') }}
@@ -37,7 +34,7 @@
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                {{ __('auth.send reset link') }}
+                                {{ __('auth.send_reset_link') }}
                             </button>
                         </div>
                     </form>

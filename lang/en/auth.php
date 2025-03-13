@@ -22,5 +22,6 @@ return [
     'address' => 'Address',
     'phone_number' => 'Phone Number',
     'reset_password' => 'Reset Password',
-    'new_password' => 'Kata Sandi Baru',
+    'new_password' => 'New Password',
+    'send_reset_link' => 'Send Reset Link',
 ];
