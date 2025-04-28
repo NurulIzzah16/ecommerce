@@ -9,11 +9,11 @@ use App\Http\Controllers\ProductImageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Middleware\AdminMiddleware;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\NotificationController;
 
 // Redirect ke halaman login
 Route::get('/', function () {
@@ -26,40 +26,49 @@ Route::post('/register', [AuthenticationController::class, 'register'])->name('r
 Route::get('/login', [AuthenticationController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthenticationController::class, 'login']);
 
-// Middleware Auth (untuk user)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
-});
 
 // Middleware Admin (untuk admin)
-Route::middleware(['auth', AdminMiddleware::class])->group(function () {
+Route::middleware(['auth','verified', AdminMiddleware::class])->group(function () {
 
     // Admin Dashboard
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     // Admin Management
     Route::resource('admins', AdminController::class);
 
-    // Orders Management
+    // Management
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
     Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
-    Route::get('orders/{id}/invoice', [OrderController::class, 'downloadInvoice'])->name('orders.invoice');
-    Route::get('/export/order', [OrderController::class, 'export'])->name('export.order');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/export', [UserController::class, 'export'])->name('users.export');
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 
     // Categories & Products
-    Route::resource('categories', CategoryController::class);
-    Route::resource('products', ProductController::class);
+    Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::resource('products', ProductController::class)->except(['show']);
 
-     // Profil Pengguna (semua user termasuk admin)
-     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    // Settings
+    Route::get('settings', [AuthenticationController::class, 'settingView'])->name('settings.index');
+    Route::post('settings/email', [AuthenticationController::class, 'emailChange'])->name('settings.store');
 
-     // Settings
-     Route::get('settings', [AuthenticationController::class, 'settingView'])->name('settings.index');
-     Route::post('settings/email', [AuthenticationController::class, 'emailChange'])->name('settings.store');
+    // Export & Import
+    Route::get('/categories/export', [CategoryController::class, 'export'])->name('categories.export');
+    Route::post('/categories/import', [CategoryController::class, 'import'])->name('categories.import');
+    Route::get('/categories/template', [CategoryController::class, 'downloadTemplate'])->name('categories.downloadTemplate');
+    Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
+    Route::get('/products/template', [ProductController::class, 'downloadTemplate'])->name('products.downloadTemplate');
+    Route::get('/products/export', [ProductController::class, 'export'])->name('products.export');
 
-     // Logout
-     Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
+    Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('admin.notifications.read');
+    Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('admin.notifications.show');
+    Route::get('/notifications/{id}/update-status', [NotificationController::class, 'updateStatus'])->name('notifications.updateStatus');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('admin.notifications.destroy');
+
+    // Logout
+    Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 });
 
 // Localization

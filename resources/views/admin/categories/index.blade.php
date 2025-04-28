@@ -1,39 +1,55 @@
 @extends('layouts.admin')
 
 @section('content')
-<h2 class="mt-3">{{__('categories.categories')}}</h2>
+<h2 class="mt-3">@lang('categories.categories')</h2>
 
-<a href="{{ route('categories.create') }}" class="btn btn-primary mb-3">{{__('categories.add')}}</a>
-
-@if (session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
+<!-- Tombol Tambah, Export, dan Import -->
+<div class="mb-3">
+    <a href="{{ route('categories.create') }}" class="btn btn-primary">@lang('categories.add')</a>
+    <a href="{{ route('categories.export') }}" class="btn btn-success">Export</a>
+    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#importModal">Import</button>
 </div>
-@endif
 
-@if ($errors->any())
-<div class="alert alert-danger">
-    <ul>
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
+<!-- Modal Import -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importModalLabel">Import Categories</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('categories.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Upload File Excel</label>
+                        <input type="file" name="file" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                </form>
+                <div class="mt-3">
+                    <a href="{{ route('categories.downloadTemplate') }}" class="btn btn-secondary">Download Template Excel</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-@endif
 
+<!-- Pesan Sukses -->
 @if (session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
+    <div class="alert alert-success mt-3">
+        {{ session('success') }}
+    </div>
 @endif
 
-<table id="categoriesTable" class="table table-striped" style="width:100%">
+<!-- Tabel Kategori -->
+<table id="categoriesTable" class="table table-striped mt-3" style="width:100%">
     <thead>
         <tr>
             <th>ID</th>
-            <th>{{__('categories.name')}}</th>
-            <th>{{__('categories.description')}}</th>
-            <th>{{__('categories.actions')}}</th>
+            <th>@lang('categories.name')</th>
+            <th>@lang('categories.description')</th>
+            <th>@lang('categories.actions')</th>
         </tr>
     </thead>
     <tbody>

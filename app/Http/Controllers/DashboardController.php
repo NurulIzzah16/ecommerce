@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -18,6 +19,10 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact('recentOrders'));
+        $admin = Auth::user(); // ambil admin yang sedang login
+        $unreadCount = $admin->unreadNotifications->count();
+        $notifications = $admin->notifications;
+
+        return view('admin.dashboard', compact('recentOrders', 'unreadCount', 'notifications'));
     }
 }

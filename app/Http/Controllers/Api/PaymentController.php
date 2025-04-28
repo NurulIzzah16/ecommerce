@@ -6,6 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Payment;
 use Exception;
+use App\Models\Order;
+use App\Models\User;
+use App\Notifications\OrderStatusChanged;
+use Illuminate\Support\Facades\Notification;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class PaymentController extends Controller
 {
@@ -44,6 +50,23 @@ class PaymentController extends Controller
             }
 
             $payment->save();
+            //$pdf = PDF::loadView('invoice', ['order' => $order])->output();
+
+            // Update order dan kirim notifikasi jika status payment berubah menjadi 'success'
+            $order = Order::find($orderId);
+            if ($order) {
+                // Pastikan bahwa pembayaran terkait sudah berhasil
+                if ($payment->status === 'success') {
+
+                    $pdf = PDF::loadView('invoice', ['order' => $order])->output();
+                    // Kirim notifikasi ke admin
+                    $admins = User::where('role', 'admin')->get();
+                    Notification::send($admins, new OrderStatusChanged($order, $pdf)); // Kirim ke admin
+
+                    // Kirim notifikasi ke user
+                    //$order->user->notify(new OrderStatusChanged($order, $pdf)); // Kirim ke user
+                }
+            }
 
             return response()->json(['message' => 'Notifikasi diproses dengan sukses.'], 200);
 

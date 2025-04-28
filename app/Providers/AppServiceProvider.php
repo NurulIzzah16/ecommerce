@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Midtrans\Config;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,5 +27,10 @@ class AppServiceProvider extends ServiceProvider
         Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
         Config::$isSanitized = true;
         Config::$is3ds = true;
+
+        View::composer('*', function ($view) {
+            $unreadCount = Auth::check() ? Auth::user()->unreadNotifications->count() : 0;
+            $view->with('unreadCount', $unreadCount);
+        });
     }
 }

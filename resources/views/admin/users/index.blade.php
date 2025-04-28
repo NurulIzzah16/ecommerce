@@ -2,7 +2,9 @@
 
 @section('content')
     <h2 class="mt-3">{{__('user.list users')}}</h2>
-
+    <div class="mb-3">
+        <a href="{{ route('users.export') }}" class="btn btn-success">Export</a>
+    </div>
     <table id="table" class="table table-striped" style="width:100%">
         <thead>
             <tr>

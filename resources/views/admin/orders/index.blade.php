@@ -3,7 +3,9 @@
 @section('content')
     <div class="container">
         <h2 class="mt-3">{{__('order.list orders')}}</h2>
-
+        <div class="mb-3">
+            <a href="{{ route('orders.export') }}" class="btn btn-success">Export</a>
+        </div>
         <table id="table" class="table table-striped" style="width:100%">
             <thead>
                 <tr>

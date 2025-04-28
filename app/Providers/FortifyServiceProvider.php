@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\RegisterResponse;
+use Laravel\Fortify\Contracts\VerifyEmailResponse;
+
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -53,6 +56,32 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::resetPasswordView(function (Request $request) {
             return view('auth.reset', ['request' => $request]);
+        });
+
+        // Override response verifikasi email:
+        $this->app->instance(VerifyEmailResponse::class, new class implements VerifyEmailResponse {
+            public function toResponse($request)
+            {
+                $user = $request->user();
+
+                if ($user->role === 'admin') {
+                    return redirect()->route('admin.dashboard');
+                }
+
+                return response()->json([
+                    'message' => 'Email berhasil diverifikasi.',
+                    'user' => $user,
+                    'email_verified_at' => $user->email_verified_at
+                ]);
+            }
+        });
+
+        // Override response setelah register:
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+            public function toResponse($request)
+            {
+                return redirect()->route('verification.notice');
+            }
         });
     }
 }

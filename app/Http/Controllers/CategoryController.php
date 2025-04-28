@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CategoryExport;
 use App\Imports\CategoryImport;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
@@ -30,7 +31,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name',
             'description' => 'nullable|string'
         ]);
 
@@ -55,7 +56,7 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name,' . $id,
             'description' => 'nullable|string'
         ]);
 
@@ -75,4 +76,38 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
+
+    // Export kategori ke file Excel
+    public function export()
+    {
+        return Excel::download(new CategoryExport, 'categories.xlsx');
+    }
+
+    // Import kategori dari file Excel
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx'
+        ]);
+
+        try {
+            Excel::import(new CategoryImport, $request->file('file'));
+            return redirect()->route('categories.index')->with('success', 'Data kategori berhasil diimpor.');
+        } catch (\Exception $e) {
+            return redirect()->route('categories.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
+        }
+    }
+
+    // Download template file Excel untuk import
+    public function downloadTemplate()
+    {
+        $path = public_path('templates/category_template.xlsx');
+
+        if (File::exists($path)) {
+            return response()->download($path, 'category_template.xlsx');
+        }
+
+        return redirect()->route('categories.index')->with('error', 'File template tidak ditemukan.');
+    }
+
 }

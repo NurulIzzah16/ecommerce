@@ -6,9 +6,13 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Category;
 use Illuminate\Http\Request;
-
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductsExport;
+use App\Imports\ProductsImport;
+use Illuminate\Support\Facades\File;
+use App\Notifications\NewProduct;
 
 class ProductController extends Controller
 {
@@ -45,6 +49,13 @@ class ProductController extends Controller
                     'image_url' => $imagePath,
                 ]);
             }
+        }
+        // Kirim notifikasi ke semua user, kecuali admin
+        $users = User::where('role', '!=', 'admin')->get();  // Menyeleksi semua user yang bukan admin
+
+        foreach ($users as $user) {
+            // Kirimkan notifikasi
+            $user->notify(new NewProduct($product));
         }
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
@@ -108,5 +119,29 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
+    }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx'
+        ]);
+
+        Excel::import(new ProductsImport, $request->file('file'));
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil diimport.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new ProductsExport, 'products.xlsx');
+    }
+
+    public function downloadTemplate()
+    {
+        $path = public_path('templates/product_template.xlsx');
+        if (File::exists($path)) {
+            return response()->download($path);
+        }
+        return redirect()->back()->with('error', 'Template tidak ditemukan.');
     }
 }

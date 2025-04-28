@@ -36,4 +36,13 @@ class OrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
+    public function export()
+    {
+        try {
+            return Excel::download(new OrderExport, 'orders.xlsx');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengunduh file: ' . $e->getMessage());
+        }
+    }
+
 }

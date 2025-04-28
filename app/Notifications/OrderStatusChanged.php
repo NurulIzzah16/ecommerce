@@ -41,8 +41,8 @@ class OrderStatusChanged extends Notification
     public function toMail($notifiable)
     {
         $mail = (new MailMessage)
-            ->subject('Order Status '. $this->order->status)
-            ->line('The status of your order has been updated to '. $this->order->status)
+            ->subject('Order Status ' . $this->order->payment->status)
+            ->line('The status of your order has been updated to ' . $this->order->payment->status)
             ->action('View Order', url('/orders/' . $this->order->id))
             ->line('Thank you for shopping with us!')
             ->salutation('Admin, Ecommerce')
@@ -66,8 +66,8 @@ class OrderStatusChanged extends Notification
     {
         return [
             'order_id' => $this->order->id,
-            'status' => $this->order->status,
-            'message' => "Order #{$this->order->id} has been updated to {$this->order->status}.",
+            'status' => $this->order->payment->status,
+            'message' => "Order #{$this->order->id} status has been updated to {$this->order->payment->status}.",
         ];
     }
 }

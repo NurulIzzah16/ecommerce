@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Order;
+use App\Exports\UserExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -131,5 +134,10 @@ class UserController extends Controller
         }
 
         return redirect()->route('login')->with('error', 'Login gagal. Silakan coba lagi.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new UserExport, 'users.xlsx');
     }
 }

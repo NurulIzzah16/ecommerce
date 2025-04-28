@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -22,7 +21,6 @@ class NewUserRegistered extends Notification
         $this->user = $user;
         $this->ccEmails = $ccEmails;
     }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -32,7 +30,6 @@ class NewUserRegistered extends Notification
     {
         return ['mail', 'database'];
     }
-
     /**
      * Get the mail representation of the notification.
      */
@@ -42,17 +39,14 @@ class NewUserRegistered extends Notification
                     ->subject('New User Registered')
                     ->greeting('Hello Admin,')
                     ->line('A new user has registered with the email ' . $this->user->email)
-                    ->action('View User', url('/users'))
+                    ->action('View User', url('/users/' . $this->user->id))
                     ->line('Thank you for using our application!')
                     ->salutation('Admin, Ecommerce');
-
         if (!empty($this->ccEmails)) {
             $mail->cc($this->ccEmails);
         }
-
         return $mail;
     }
-
     /**
      * Get the array representation of the notification.
      *
@@ -62,8 +56,8 @@ class NewUserRegistered extends Notification
     {
         return [
             'user_id' => $this->user->id,
-            'name' => $this->user->name,
-            'message' => "User baru dengan nama {$this->user->name} telah mendaftar.",
+            'name' => $this->user->username,
+            'message' => "User baru dengan nama {$this->user->username} telah mendaftar.",
         ];
     }
 }

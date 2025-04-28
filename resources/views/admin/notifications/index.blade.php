@@ -42,11 +42,11 @@
 
                     <div class="d-flex align-items-center">
                         @if (is_null($notification->read_at))
-                            <a href="{{ route('notifications.show', $notification->id) }}" class="btn btn-sm btn-primary mr-2">View</a>
+                        <a href="{{ route('admin.notifications.read', $notification->id) }}" class="btn btn-sm btn-primary mr-2">View</a>
                         @endif
 
                         {{-- Tombol hapus notifikasi --}}
-                        <form action="{{ route('notifications.destroy', $notification->id) }}" method="POST">
+                        <form action="{{ route('admin.notifications.destroy', $notification->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-sm btn-danger" type="submit">
@@ -63,5 +63,5 @@
     @else
         <p>No notifications found.</p>
     @endif
-    
+
 @endsection
