@@ -34,8 +34,22 @@ Route::middleware(['auth','verified', AdminMiddleware::class])->group(function (
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+
     // Admin Management
-    Route::resource('admins', AdminController::class);
+    Route::get('admins', [AdminController::class, 'index'])->name('admins.index');
+    Route::get('admins/create', [AdminController::class, 'create'])->name('admins.create');
+    Route::post('admins', [AdminController::class, 'store'])->name('admins.store');
+    Route::get('admins/{id}/edit', [AdminController::class, 'edit'])->name('admins.edit');
+    Route::put('admins/{id}', [AdminController::class, 'update'])->name('admins.update');
+    Route::delete('admins/{id}', [AdminController::class, 'destroy'])->name('admins.destroy');
+
+    // Roles
+    Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('roles/create', [RoleController::class, 'create'])->name('roles.create');
+    Route::get('roles/{id}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+    Route::post('roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::put('roles/{id}', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('roles/{id}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
     // Management
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');

@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:orders')->only(['index']);
+    }
+
     public function index()
     {
         // Mengambil semua pesanan dari user biasa (bukan admin)

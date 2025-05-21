@@ -34,7 +34,7 @@ class CheckoutController extends Controller
                 ->get();
 
             if ($cartItems->isEmpty()) {
-                return response()->json(['message' => 'Keranjang belanja Anda kosong.'], 400);
+                return response()->json(['message' => __('messageApi.cart empty')], 400);
             }
 
             $totalPrice = 0;
@@ -44,7 +44,7 @@ class CheckoutController extends Controller
 
                 if ($product->stock < $cartItem->quantity) {
                     return response()->json([
-                        'message' => 'Stok produk ' . $product->name . ' tidak mencukupi.'
+                        'message' => __('messageApi.Insufficient stock for the selected product')
                     ], 400);
                 }
 
@@ -108,16 +108,16 @@ class CheckoutController extends Controller
             );
 
             return response()->json([
-                'message' => 'Checkout berhasil dilakukan.',
+                'message' => __('messageApi.Checkout completed successfully'),
                 'order' => $order,
                 'snap_token' => $snapToken,
                 'payment_url' => "https://app.sandbox.midtrans.com/snap/v2/vtweb/$snapToken"
             ], 200);
 
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Produk tidak ditemukan.'], 404);
+            return response()->json(['message' => __('messageApi.An error occurred: ')], 404);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['message' => __('messageApi.Product not found') . $e->getMessage()], 500);
         }
     }
 }

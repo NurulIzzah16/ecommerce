@@ -25,36 +25,60 @@
                                 Dashboard
                             </a>
                         </li>
+                        @if (!in_array('categories', auth()->user()->role->permissions ?? []))
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('categories*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
                                 <img src="{{ asset('assets/category.svg') }}" alt="Categories" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.categories')}}
+                                {{ __('sidebar.categories') }}
                             </a>
                         </li>
+                        @endif
+
+                        @if (!in_array('products', auth()->user()->role->permissions ?? []))
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('products*') ? 'active' : '' }}" href="{{ route('products.index') }}">
-                            <img src="{{ asset('assets/product.svg') }}" alt="Products" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.products')}}
+                                <img src="{{ asset('assets/product.svg') }}" alt="Products" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.products') }}
                             </a>
                         </li>
+                        @endif
+
+                        @if (!in_array('users', auth()->user()->role->permissions ?? []))
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('users*') ? 'active' : '' }}" href="{{ route('users.index') }}">
-                            <img src="{{ asset('assets/user.svg') }}" alt="Users" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.users')}}
+                                <img src="{{ asset('assets/user.svg') }}" alt="Users" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.users') }}
                             </a>
                         </li>
+                        @endif
+
+                        @if (!in_array('admins', auth()->user()->role->permissions ?? []))
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('admins*') ? 'active' : '' }}" href="{{ route('admins.index') }}">
-                            <img src="{{ asset('assets/admin.svg') }}" alt="Admins" style="width: 19px; height: 19px; margin-right: 6px;">
-                                {{__('sidebar.admins')}}
+                                <img src="{{ asset('assets/admin.svg') }}" alt="Admins" style="width: 19px; height: 19px; margin-right: 6px;">
+                                {{ __('sidebar.admins') }}
                             </a>
                         </li>
+                        @endif
+
+                        @if (!in_array('orders', auth()->user()->role->permissions ?? []))
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('order*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
-                            <img src="{{ asset('assets/order.svg') }}" alt="Orders" style="width: 20px; height: 20px; margin-right: 5px;">
-                                {{__('sidebar.orders')}}
+                                <img src="{{ asset('assets/order.svg') }}" alt="Orders" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.orders') }}
                             </a>
                         </li>
+                        @endif
+
+                        @if (!in_array('roles', auth()->user()->role->permissions ?? []))
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('role*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+                                <img src="{{ asset('assets/role.svg') }}" alt="Roles" style="width: 20px; height: 20px; margin-right: 5px;">
+                                {{ __('sidebar.roles') }}
+                            </a>
+                        </li>
+                        @endif
+
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('settings*') ? 'active' : '' }}" href="{{ route('settings.index') }}">
                             <img src="{{ asset('assets/gear.svg') }}" alt="Settings" style="width: 20px; height: 20px; margin-right: 5px;">
@@ -87,11 +111,11 @@
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script> -->
-    
+
     <script>
         var locale = "{{ App::getLocale() }}";
-        var languageUrl = locale === 'id' 
-        ? "{{asset('assets/indonesia.json')}}" 
+        var languageUrl = locale === 'id'
+        ? "{{asset('assets/indonesia.json')}}"
         : "{{asset('assets/english.json')}}" ;
 
         document.getElementById('notification-btn').addEventListener('click', function () {

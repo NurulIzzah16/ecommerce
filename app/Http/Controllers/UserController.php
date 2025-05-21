@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    /**
-     * Menampilkan daftar user (hanya untuk admin)
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:users')->only(['index']);
+    }
+
     public function index()
     {
         $user = Auth::user();

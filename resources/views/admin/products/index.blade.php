@@ -5,7 +5,9 @@
 
 <!-- Tombol Tambah, Export, dan Import Produk -->
 <div class="d-flex mb-3">
+    @if (!in_array('products.create', auth()->user()->role->permissions ?? []))
     <a href="{{ route('products.create') }}" class="btn btn-primary me-2">{{__('product.add')}}</a>
+    @endif
     <a href="{{ route('products.export') }}" class="btn btn-success me-2">Export</a>
     <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#importModal">Import</button>
 </div>
@@ -80,12 +82,16 @@
                     @endif
                 </td>
                 <td>
+                    @if (!in_array('products.edit', auth()->user()->role->permissions ?? []))
                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                    @endif
+                    @if (!in_array('products.delete', auth()->user()->role->permissions ?? []))
                     <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">{{__('product.delete')}}</button>
                     </form>
+                    @endif
                 </td>
             </tr>
         @endforeach

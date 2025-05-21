@@ -4,19 +4,22 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-// use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
 
 class Permission
 {
     public function handle(Request $request, Closure $next, $permission)
     {
-        $user = $request->user();
+        $user = Auth::user();
 
-        if (!$user || !$user->relatedRole || !in_array($permission, $user->relatedRole->permissions ?? [])) {
-            $request->session()->flash('error', 'Unauthorized action.');
-            return redirect()->back();
+        if (!in_array($permission, $user->roles->permissions ?? [])) {
+            Log::warning('user tidak ditemukan'. $permission);
+            return redirect()->to('admin/dashboard');
         }
 
         return $next($request);
     }
+
 }

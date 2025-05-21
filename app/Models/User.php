@@ -16,7 +16,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Atribut yang bisa diisi (mass assignable)
      */
-    protected $fillable = ['username', 'email', 'password', 'role'];
+    protected $fillable = ['username', 'email', 'password', 'role', 'role_id'];
 
     /**
      * Atribut yang harus disembunyikan saat serialisasi
@@ -27,7 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Atribut yang harus dikonversi ke tipe data lain
      */
     protected $casts = [
-        'password' => 'hashed', // Laravel 10+ mendukung hashing otomatis
+        'password' => 'hashed',
     ];
 
     /**
@@ -37,4 +37,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Order::class);
     }
+
+    public function roles()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
 }

@@ -5,7 +5,9 @@
 
 <!-- Tombol Tambah, Export, dan Import -->
 <div class="mb-3">
+    @if (!in_array('categories.create', auth()->user()->role->permissions ?? []))
     <a href="{{ route('categories.create') }}" class="btn btn-primary">@lang('categories.add')</a>
+    @endif
     <a href="{{ route('categories.export') }}" class="btn btn-success">Export</a>
     <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#importModal">Import</button>
 </div>
@@ -59,12 +61,16 @@
                 <td>{{ $category->name }}</td>
                 <td>{{ $category->description }}</td>
                 <td>
+                    @if (!in_array('categories.create', auth()->user()->role->permissions ?? []))
                     <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    @endif
+                    @if (!in_array('categories.delete', auth()->user()->role->permissions ?? []))
                     <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah kamu yakin ingin menghapus kategori ini?')">Delete</button>
                     </form>
+                    @endif
                 </td>
             </tr>
         @endforeach

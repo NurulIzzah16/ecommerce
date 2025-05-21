@@ -39,11 +39,13 @@
         </div>
         <div class="form-group">
             <label for="role">{{ __('admin.role_name') }}</label>
-            <select name="role" class="form-control" required>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
+            <select name="role_id" class="form-control" required>
+                @foreach ($roles as $role)
+                    <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+                @endforeach
             </select>
         </div>
+
         <button type="submit" class="btn btn-primary mt-3">{{ __('auth.register') }}</button>
     </form>
 @endsection

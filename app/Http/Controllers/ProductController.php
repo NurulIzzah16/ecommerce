@@ -16,6 +16,14 @@ use App\Notifications\NewProduct;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:products')->only(['index']);
+        $this->middleware('permission:products.create')->only(['create', 'store']);
+        $this->middleware('permission:products.edit')->only(['edit', 'update']);
+        $this->middleware('permission:products.delete')->only(['destroy']);
+    }
+
     public function index()
     {
         $products = Product::with('images', 'category')->get();

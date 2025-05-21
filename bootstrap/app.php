@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\Permission;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Alias middleware harus berupa array
         $middleware->alias(aliases: [
             'admin' => AdminMiddleware::class,
+            'permission' => Permission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

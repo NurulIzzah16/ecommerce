@@ -40,12 +40,12 @@ class ProductController extends Controller
 
             $products = $query->get();
 
-            return response()->json(["message" => "Daftar produk berhasil diambil.", "products" => $products], 200);
+            return response()->json(["message" => __("messageApi.Product list successfully retrieved"), "products" => $products], 200);
 
         } catch (QueryException $e) {
-            return response()->json(["error" => "Database error: " . $e->getMessage()], 500);
+            return response()->json(["error" => __("messageApi.Database error") . ": " . $e->getMessage()], 500);
         } catch (\Exception $e) {
-            return response()->json(["error" => "Unexpected error: " . $e->getMessage()], 500);
+            return response()->json(["error" => __("messageApi.Unexpected error") . ": " . $e->getMessage()], 500);
         }
     }
 }

@@ -53,11 +53,11 @@ class AuthenticationController extends Controller
             Notification::send($admins, new NewUserRegistered($user));
 
             return response()->json([
-                'message' => 'Registrasi berhasil. Silakan login.',
+                'message' => __('messageApi.register success'),
                 'user' => $user
             ], 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['message' => __('messageApi.An error occurred: ') . $e->getMessage()], 500);
         }
     }
 
@@ -85,7 +85,7 @@ class AuthenticationController extends Controller
 
                     // Kirimkan respons bahwa OTP sudah dikirim
                     return response()->json([
-                        'message' => 'Akun belum diverifikasi. OTP telah dikirimkan ke email Anda. Silakan verifikasi untuk melanjutkan login.',
+                        'message' => __('messageApi.Account is not verified. An OTP has been sent to your email. Please verify to continue login'),
                         'user' => $user
                     ], 200);
                 }
@@ -93,14 +93,14 @@ class AuthenticationController extends Controller
                 // Jika akun sudah diverifikasi, lanjutkan login dan berikan token
                 if ($user->role === 'admin') {
                     Auth::logout();
-                    return response()->json(['message' => 'Akun ini tidak diizinkan untuk login.'], 403);
+                    return response()->json(['message' => __('messageApi.Unauthorized')], 403);
                 }
 
                 // Generate token jika akun sudah diverifikasi
                 $token = $user->createToken('auth_token')->plainTextToken;
 
                 return response()->json([
-                    'message' => 'Login berhasil sebagai user.',
+                    'message' => __('messageApi.login success'),
                     'user' => $user,
                     'token' => $token,
                     'token_type' => 'Bearer'
@@ -108,9 +108,9 @@ class AuthenticationController extends Controller
             }
 
             // Jika kredensial tidak valid
-            return response()->json(['message' => 'Email atau password salah!'], 401);
+            return response()->json(['message' => __('messageApi.check your email or password')], 401);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['message' => __('messageApi.An error occurred: ') . $e->getMessage()], 500);
         }
     }
 
@@ -120,17 +120,17 @@ class AuthenticationController extends Controller
             $user = $request->user();
 
             if (!$user) {
-                return response()->json(['message' => 'User tidak terautentikasi.'], 401);
+                return response()->json(['message' => __('messageApi.Unauthorized')], 401);
             }
 
             if ($user->currentAccessToken()) {
                 $user->currentAccessToken()->delete();
-                return response()->json(['message' => 'Logout berhasil.'], 200);
+                return response()->json(['message' => __('messageApi.logout success')], 200);
             }
 
-            return response()->json(['message' => 'Token tidak ditemukan atau sudah dihapus.'], 400);
+            return response()->json(['message' => __('messageApi.logout success')], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['message' => __('messageApi.An error occurred: ') . $e->getMessage()], 500);
         }
     }
 
@@ -141,12 +141,12 @@ class AuthenticationController extends Controller
             $user = $request->user();
 
             if (!$user) {
-                return response()->json(['message' => 'Token tidak ditemukan atau sudah kedaluwarsa. Silakan login kembali.'], 401);
+                return response()->json(['message' => __('messageApi.Token not found or has been deleted')], 401);
             }
 
             // Pastikan token valid (misalnya token telah kedaluwarsa)
             if (!Auth::check()) {
-                return response()->json(['message' => 'Token tidak valid atau telah kedaluwarsa. Silakan login kembali.'], 401);
+                return response()->json(['message' => __('messageApi.Token not found or has been deleted')], 401);
             }
 
             // Memeriksa apakah OTP perlu diverifikasi ulang
@@ -166,7 +166,7 @@ class AuthenticationController extends Controller
 
                 // Kirim pesan untuk memverifikasi OTP
                 return response()->json([
-                    'message' => 'Harap verifikasi OTP yang telah dikirimkan ke email Anda sebelum memperbarui data.',
+                    'message' => __('messageApi.OTP sent to your email'),
                     'otp_sent' => true,
                     'user' => $user
                 ], 400);
@@ -174,7 +174,7 @@ class AuthenticationController extends Controller
 
             // Jika OTP dimasukkan, periksa apakah valid
             if ($user->otp_code !== $otpInput || $user->otp_expires_at < now()) {
-                return response()->json(['message' => 'Kode OTP tidak valid atau telah kedaluwarsa.'], 400);
+                return response()->json(['message' => __('messageApi.Invalid OTP code')], 400);
             }
 
             // Setelah OTP diverifikasi, lanjutkan untuk update profil pengguna
@@ -201,14 +201,14 @@ class AuthenticationController extends Controller
             $user->otp_expires_at = null;
             $user->save();
 
-            return response()->json(['message' => 'Profil berhasil diperbarui.', 'user' => $user], 200);
+            return response()->json(['message' => __('messageApi.update success'), 'user' => $user], 200);
 
         } catch (AuthenticationException $e) {
-            return response()->json(['message' => 'Token tidak valid atau telah kedaluwarsa. Silakan login kembali.'], 401);
+            return response()->json(['message' => __('messageApi.Token not found or has been deleted')], 401);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(['message' => 'Data yang dimasukkan tidak valid.', 'errors' => $e->errors()], 422);
+            return response()->json(['message' => __('messageApi.The provided data is invalid'), 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['message' => __('messageApi.An error occurred: ') . $e->getMessage()], 500);
         }
     }
 
@@ -222,15 +222,15 @@ class AuthenticationController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return response()->json(['message' => 'User tidak ditemukan'], 404);
+            return response()->json(['message' => __('messageApi.user not found')], 404);
         }
 
         if ($user->otp_code !== $request->otp_code) {
-            return response()->json(['message' => 'OTP tidak cocok'], 400);
+            return response()->json(['message' => __('messageApi.Invalid OTP code')], 400);
         }
 
         if (now()->gt($user->otp_expires_at)) {
-            return response()->json(['message' => 'OTP sudah kedaluwarsa'], 400);
+            return response()->json(['message' => __('messageApi.OTP code has expired')], 400);
         }
 
         $user->email_verified_at = now();
@@ -238,7 +238,7 @@ class AuthenticationController extends Controller
         $user->otp_expires_at = null;
         $user->save();
 
-        return response()->json(['message' => 'Email berhasil diverifikasi!']);
+        return response()->json(['message' => __('messageApi.OTP verified successfully. Your email is now confirmed.')]);
     }
 
     public function requestOtpResetPassword(Request $request)
@@ -259,7 +259,7 @@ class AuthenticationController extends Controller
         Mail::to($user->email)->send(new OtpVerificationMail($user));
 
         return response()->json([
-            'message' => 'Kode verifikasi telah dikirim ke email Anda.',
+            'message' => __('messageApi.OTP sent to your email'),
             'otp_sent' => true
         ]);
     }
@@ -277,7 +277,7 @@ class AuthenticationController extends Controller
 
         if ((string) $user->otp_code !== (string) $request->otp_code || Carbon::parse($user->otp_expires_at)->isPast()) {
             return response()->json([
-                'message' => 'Kode OTP salah atau telah kedaluwarsa.',
+                'message' => __('messageApi.OTP code has expired'),
                 'otp_valid' => false
             ], 400);
         }
@@ -288,7 +288,7 @@ class AuthenticationController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Password berhasil diperbarui.'
+            'message' => __('messageApi.Password has been reset successfully.')
         ]);
     }
 }

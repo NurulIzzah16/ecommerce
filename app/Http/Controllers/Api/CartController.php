@@ -43,17 +43,17 @@ class CartController extends Controller
             }
 
             return response()->json([
-                'message' => 'Produk berhasil ditambahkan ke keranjang.',
+                'message' => __('messageApi.cart item added'),
                 'username' => $user->username
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Data yang dimasukkan tidak valid.',
+                'message' => __('messageApi.The provided data is invalid'),
                 'errors' => $e->errors(),
             ], 422);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => __('messageApi.An error occurred: ') . $e->getMessage()
             ], 500);
         }
     }
@@ -69,7 +69,7 @@ class CartController extends Controller
                 ->get();
 
             if ($cartItems->isEmpty()) {
-                return response()->json(['message' => 'Keranjang belanja Anda kosong.'], 200);
+                return response()->json(['message' => __('messageApi.cart empty')], 200);
             }
 
             // Menampilkan isi keranjang
@@ -84,13 +84,13 @@ class CartController extends Controller
             });
 
             return response()->json([
-                'message' => 'Data keranjang berhasil ditemukan.',
+                'message' => __('messageApi.cart items fetched'),
                 'cart' => $cartData
             ], 200);
 
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => __('messageApi.An error occurred: ') . $e->getMessage()
             ], 500);
         }
     }
@@ -110,26 +110,26 @@ class CartController extends Controller
                                 ->first();
 
             if (!$cartItem) {
-                return response()->json(['message' => 'Produk tidak ditemukan di keranjang.'], 404);
+                return response()->json(['message' => __('messageApi.No items found in the cart')], 404);
             }
 
             $cartItem->quantity = $request->quantity;
             $cartItem->save();
 
             return response()->json([
-                'message' => 'Quantity produk berhasil diperbarui.',
+                'message' => __('messageApi.cart item updated'),
                 'username' => $user->username
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Data yang dimasukkan tidak valid.',
+                'message' => __('messageApi.The provided data is invalid'),
                 'errors' => $e->errors(),
             ], 422);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Produk tidak ditemukan.'], 404);
+            return response()->json(['message' => __('messageApi.Product not found')], 404);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => __('messageApi.An error occurred: ') . $e->getMessage()
             ], 500);
         }
     }
@@ -148,25 +148,25 @@ class CartController extends Controller
                                 ->first();
 
             if (!$cartItem) {
-                return response()->json(['message' => 'Produk tidak ditemukan di keranjang.'], 404);
+                return response()->json(['message' => __('messageApi.No items found in the cart')], 404);
             }
 
             $cartItem->delete();
 
             return response()->json([
-                'message' => 'Produk berhasil dihapus dari keranjang.',
+                'message' => __('messageApi.No items found in the cart'),
                 'username' => $user->username
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Data yang dimasukkan tidak valid.',
+                'message' => __('messageApi.The provided data is invalid'),
                 'errors' => $e->errors(),
             ], 422);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Produk tidak ditemukan.'], 404);
+            return response()->json(['message' => __('messageApi.No items found in the cart')], 404);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => __('messageApi.An error occurred: ') . $e->getMessage()
             ], 500);
         }
     }

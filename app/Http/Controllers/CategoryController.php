@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:categories')->only(['index']);
+        $this->middleware('permission:categories.create')->only(['create', 'store']);
+        $this->middleware('permission:categories.edit')->only(['edit', 'update']);
+        $this->middleware('permission:categories.delete')->only(['destroy']);
+    }
+
     // Menampilkan semua kategori
     public function index()
     {
@@ -109,5 +117,6 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('error', 'File template tidak ditemukan.');
     }
+
 
 }

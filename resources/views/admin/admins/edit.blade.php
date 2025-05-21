@@ -34,10 +34,13 @@
         </div>
 
         <div class="form-group">
-            <label for="role">{{ __('admin.role_name') }}</label>
-            <select name="role" class="form-control" required>
-                <option value="admin" {{ $admin->role === 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="user" {{ $admin->role === 'user' ? 'selected' : '' }}>User</option>
+            <label for="role_id">{{ __('admin.role_name') }}</label>
+            <select name="role_id" class="form-control" required>
+                @foreach ($roles as $role)
+                    <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                        {{ $role->name }}
+                    </option>
+                @endforeach
             </select>
         </div>
 

@@ -22,7 +22,7 @@ class PaymentController extends Controller
             $notification = json_decode($payload);
 
             if (!$notification || !isset($notification->transaction_status)) {
-                return response()->json(['message' => 'Notifikasi tidak valid.'], 400);
+                return response()->json(['message' => __('messageApi.Invalid notification')], 400);
             }
 
             // Ambil data dari notifikasi Midtrans
@@ -35,7 +35,7 @@ class PaymentController extends Controller
             $payment = Payment::where('order_id', $orderId)->first();
 
             if (!$payment) {
-                return response()->json(['message' => 'Pembayaran tidak ditemukan.'], 404);
+                return response()->json(['message' => __('messageApi.Payment not found')], 404);
             }
 
             // Update payment berdasarkan status dari Midtrans
@@ -68,10 +68,10 @@ class PaymentController extends Controller
                 }
             }
 
-            return response()->json(['message' => 'Notifikasi diproses dengan sukses.'], 200);
+            return response()->json(['message' => __('messageApi.Notification processed successfully')], 200);
 
         } catch (Exception $e) {
-            return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['message' => __('messageApi.An error occurred: ') . $e->getMessage()], 500);
         }
     }
 

@@ -32,7 +32,7 @@ class NotificationController extends Controller
 
         $notification->markAsRead();
 
-        return response()->json(['message' => 'Notifikasi telah ditandai sebagai dibaca.']);
+        return response()->json(['message' => __('messageApi.Notification marked as read successfully.')]);
     }
 
     // Hapus notifikasi
@@ -44,6 +44,6 @@ class NotificationController extends Controller
 
         $notification->delete();
 
-        return response()->json(['message' => 'Notifikasi berhasil dihapus.']);
+        return response()->json(['message' => __('messageApi.Notification deleted successfully.')]);
     }
 }

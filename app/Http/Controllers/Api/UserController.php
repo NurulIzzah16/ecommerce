@@ -12,11 +12,11 @@ class UserController extends Controller
         $user = $request->user();
 
         if (!$user) {
-            return response()->json(['message' => 'User tidak ditemukan.'], 404);
+            return response()->json(['message' => __('messageApi.user not found')], 404);
         }
 
         return response()->json([
-            'message' => 'Data user berhasil diambil.',
+            'message' => __('messageApi.user found'),
             'user' => $user
         ], 200);
     }
